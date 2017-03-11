@@ -3,10 +3,14 @@
 <head>
 	<title>Fit With Friends</title>
 	<link rel="stylesheet" href="assets/css/app.css">
+
 	<script src="https://cdn.jsdelivr.net/zurb/foundation-apps-1.2.0.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/zurb/foundation-apps-templates-1.2.0.min.js"></script>
+
 	<link rel="stylesheet" href="assets/css/custom.css">
 	<link href="https://fonts.googleapis.com/css?family=Oswald:200,300,400" rel="stylesheet">
+
+  <!-- Firebase -->
 	<script src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
 </head>
 <body>
@@ -20,18 +24,16 @@
 			</div>
 		</div>
 		<h1 class="text-center themecolor" style="position: absolute; top: 60px; z-index: 10; font-size: 3em; padding: 6%; padding-top: 10px;">Connecting people to <span class='themecolor'>make fitness fun</span></h1>
-		<img src="assets/img/cover.jpg" style="opacity: 1">
+		<img src="assets/img/cover.jpg" style="opacity: 1; width: 100%; height: auto">
 		<p class="text-center" style="padding: 3%">Exercise can suck. We get it. Our goal is to make it suck less, and maybe even make it fun. By setting up a series of meetings for the friends you want, and challenges for the friends you already have, Fit With Friends aims to be the ultimate excercise companion.<br>What are you waiting for? A healthier you is just one tap away.<br>
-				<a class="button" style="width: 100%">Register with Facebook</a> </p>
+				<button onClick="fbAuth()" style="width: 100%">Register with Facebook</button> </p>
 
 	</div>
 
-  <h1 id="bigOne"></h1>
-
   <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.7.1/firebase-auth.js"></script>
   <script>
     // Initialize Firebase
+
     var config = {
       apiKey: "AIzaSyC37MdWztXHcvohVxgptCuxF-CuQ895d-k",
       authDomain: "fitwithfriends-6973a.firebaseapp.com",
@@ -39,20 +41,23 @@
       storageBucket: "fitwithfriends-6973a.appspot.com",
       messagingSenderId: "230459414493"
     };
+
     firebase.initializeApp(config);
 
-    var bigOne = document.getElementById('bigOne')
-    var dbRef = firebase.database().ref().child('text')
-    dbRef.on('value', snap => bigOne.innerText = snap.val())
+    function fbAuth() {
 
     var provider = new firebase.auth.FacebookAuthProvider();
 
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-      var token = result.credential.accessToken;
+    firebase.auth().signInWithRedirect(provider);
+
+    firebase.auth().getRedirectResult().then(function(result) {
+      if (result.credential) {
+        // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+        var token = result.credential.accessToken;
+        // ...
+      }
       // The signed-in user info.
       var user = result.user;
-      // ...
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -64,11 +69,15 @@
       // ...
     });
 
+
+
+    }
     firebase.auth().signOut().then(function() {
       // Sign-out successful.
     }).catch(function(error) {
       // An error happened.
     });
+
   </script>
 
 <!--	<script src="./js/app.js" charset="utf-8"></script> -->
